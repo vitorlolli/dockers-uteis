@@ -1,0 +1,11 @@
+services:
+  php-composer:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - php-composer:/var/www/html
+    command: tail -f /dev/null
+    
+volumes:
+  php-composer:
