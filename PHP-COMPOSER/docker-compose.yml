@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - php-composer:/var/www/html
+    ports:
+      - 8000:8000
     command: tail -f /dev/null
     
 volumes:
