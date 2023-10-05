@@ -1,0 +1,6 @@
+
+services:
+  redis:
+    image: nginx
+    ports:
+      - 80:80
