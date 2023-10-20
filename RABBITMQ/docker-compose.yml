@@ -1,8 +1,16 @@
 services:
   rabbitmq:
     image: rabbitmq:3.9.29-management
+    # container_name e hostname servem para sempre gerar as mesmas pastas para o volume 
+    container_name: rabbitmq
+    hostname: rabbit
     ports:
       - 5672:5672
       - 15672:15672
     volumes:
       - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  rabbitmq_data:
+    external: true
