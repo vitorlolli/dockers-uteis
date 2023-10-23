@@ -1,7 +1,4 @@
-version: '3.1'
-
 services:
-
   db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -11,3 +8,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: teste
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    external: true
