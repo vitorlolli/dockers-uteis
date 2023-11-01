@@ -1,6 +1,14 @@
 services:
   redis:
     image: redis
-    command: redis-server 
-    ports:
-      - 6379:6379
+    environment:
+      - REDIS_PASSWORD=redis
+    volumes:
+      - redis_data:/data
+    command: redis-server
+    # ports:
+    #   - 6379:6379
+
+volumes:
+  redis_data:
+    external: true

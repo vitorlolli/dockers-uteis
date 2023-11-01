@@ -1,0 +1,25 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.3
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_URL_HOST=keycloak_mysql
+      - KC_DB_USERNAME=root
+      - KC_DB_PASSWORD=keycloak
+    ports:
+      - 8080:8080
+    command: start-dev
+
+  keycloak_mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=keycloak
+      - MYSQL_DATABASE=keycloak
+    volumes:
+      - keycloak_mysql:/var/lib/mysql
+
+volumes:
+  keycloak_mysql:
+    external: true
