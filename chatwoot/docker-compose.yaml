@@ -1,0 +1,150 @@
+services:
+  chatwoot_redis:
+    image: redis:alpine
+    restart: always
+    command: [ "sh", "-c", "redis-server --requirepass chatwoot" ]
+    volumes:
+      - chatwoot_redis_data:/data
+
+  chatwoot_postgres:
+    image: postgres:12
+    restart: always
+    volumes:
+      - chatwoot_postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=chatwoot
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=chatwoot
+
+  rails:
+    image: chatwoot/chatwoot:latest
+    volumes:
+      - chatwoot_data:/app/storage
+    depends_on:
+      - chatwoot_postgres
+      - chatwoot_redis
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - INSTALLATION_ENV=docker
+      - SECRET_KEY_BASE=replace_with_lengthy_secure_hex
+      - FRONTEND_URL=http://0.0.0.0:3000
+      - FORCE_SSL=false
+      - ENABLE_ACCOUNT_SIGNUP=false
+      - REDIS_URL=redis://chatwoot_redis:6379
+      - REDIS_PASSWORD=chatwoot
+      - POSTGRES_HOST=chatwoot_postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=chatwoot
+      - ACTIVE_STORAGE_SERVICE=local
+      - RAILS_LOG_TO_STDOUT=true
+      - LOG_LEVEL=info
+      - LOG_SIZE=500
+      - ENABLE_PUSH_RELAY_SERVER=true
+    entrypoint: docker/entrypoints/rails.sh
+    command:
+      [ 'bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0' ]
+
+  sidekiq:
+    image: chatwoot/chatwoot:latest
+    volumes:
+      - chatwoot_data:/app/storage
+    depends_on:
+      - chatwoot_postgres
+      - chatwoot_redis
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - INSTALLATION_ENV=docker
+      - SECRET_KEY_BASE=replace_with_lengthy_secure_hex
+      - FRONTEND_URL=http://0.0.0.0:3000
+      - FORCE_SSL=false
+      - ENABLE_ACCOUNT_SIGNUP=false
+      - REDIS_URL=redis://chatwoot_redis:6379
+      - REDIS_PASSWORD=chatwoot
+      - POSTGRES_HOST=chatwoot_postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=chatwoot
+      - ACTIVE_STORAGE_SERVICE=local
+      - RAILS_LOG_TO_STDOUT=true
+      - LOG_LEVEL=info
+      - LOG_SIZE=500
+      - ENABLE_PUSH_RELAY_SERVER=true
+    command:
+      [ 'bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml' ]
+
+  # codechat_mongodb:
+  #   image: mongo:6
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: codechat
+  #   volumes:
+  #     - codechat_mongo_data:/data/db
+
+  # codechat_redis:
+  #   image: redis:7
+  #   restart: always
+  #   command: [ "sh", "-c", "redis-server" ]
+  #   volumes:
+  #     - codechat_redis_data:/data
+
+  # codechat:
+  #   image: codechat/api:v1.2.6
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8083:8083
+  #   volumes:
+  #     - codechat_instances:/codechat/instances
+  #   environment:
+  #     - DEL_INSTANCE=false
+  #     - DATABASE_ENABLED=true
+  #     - DATABASE_CONNECTION_URI=mongodb://root:codechat@codechat_mongodb/?authSource=admin&readPreference=primary&ssl=false&directConnection=true
+  #     - DATABASE_CONNECTION_DB_PREFIX_NAME=codechat
+  #     - DATABASE_SAVE_DATA_INSTANCE=true
+  #     - DATABASE_SAVE_DATA_OLD_MESSAGE=true
+  #     - DATABASE_SAVE_DATA_NEW_MESSAGE=true
+  #     - DATABASE_SAVE_MESSAGE_UPDATE=true
+  #     - DATABASE_SAVE_DATA_CONTACTS=true
+  #     - DATABASE_SAVE_DATA_CHATS=true
+  #     - REDIS_ENABLED=true
+  #     - REDIS_URI=redis://codechat_redis/1
+  #     - REDIS_PREFIX_KEY=codechat
+  #     - WEBHOOK_GLOBAL_ENABLED=true
+  #     - WEBHOOK_GLOBAL_URL=http://host.docker.internal:1234/webhook/codechat
+  #     - QRCODE_LIMIT=1
+  #     - AUTHENTICATION_TYPE=apikey
+  #     - AUTHENTICATION_API_KEY=t8OOEeISKzpmc3jjcMqBWYSaJsafdefer
+  #     - AUTHENTICATION_JWT_EXPIRIN_IN=0
+  #     - AUTHENTICATION_JWT_SECRET=svsolution
+  #   command: ['node', './src/main.js']
+
+  # connector:
+  #   build:
+  #     context: ./connector/
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 1234:1234
+  #   environment:
+  #     - PORT=1234
+  #     - CHATWOOT_TOKEN=7VcVcpemBHkDmd7CcTgx3eqA
+  #     - CHATWOOT_BASE_URL=http://host.docker.internal:3000
+  #     - CODECHAT_BASE_URL=http://host.docker.internal:8083
+  #     - CODECHAT_API_KEY=t8OOEeISKzpmc3jjcMqBWYSaJsafdefer
+  #     - TOSIGN=true
+  #     - IMPORT_MESSAGES_SENT=false
+
+volumes:
+  chatwoot_data:
+    external: true
+  chatwoot_postgres_data:
+    external: true
+  chatwoot_redis_data:
+    external: true
+  # codechat_mongo_data:
+  #   external: true
+  # codechat_redis_data:
+  #   external: true
+  # codechat_instances:
+  #   external: true
