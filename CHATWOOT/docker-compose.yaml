@@ -49,7 +49,7 @@ services:
       - SMTP_ADDRESS=smtp.hostinger.com
       - SMTP_PORT=465
       - SMTP_USERNAME=vitor@svsolution.com.br
-      - SMTP_PASSWORD=@cessoSvsolution1996
+      - SMTP_PASSWORD=senha
       - SMTP_AUTHENTICATION=login
       - SMTP_OPENSSL_VERIFY_MODE=none
       - SMTP_TLS=true
