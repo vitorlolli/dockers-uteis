@@ -17,7 +17,7 @@ services:
       - POSTGRES_PASSWORD=chatwoot
 
   rails:
-    image: chatwoot/chatwoot:latest
+    image: chatwoot/chatwoot:v3.2.0
     volumes:
       - chatwoot_data:/app/storage
     depends_on:
@@ -56,10 +56,19 @@ services:
       - SMTP_SSL=true
     entrypoint: docker/entrypoints/rails.sh
     command:
-      [ 'bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0' ]
+      [
+        'bundle',
+        'exec',
+        'rails',
+        's',
+        '-p',
+        '3000',
+        '-b',
+        '0.0.0.0'
+      ]
 
   sidekiq:
-    image: chatwoot/chatwoot:latest
+    image: chatwoot/chatwoot:v3.2.0
     volumes:
       - chatwoot_data:/app/storage
     depends_on:
@@ -95,11 +104,16 @@ services:
       - SMTP_TLS=true
       - SMTP_SSL=true
     command:
-      [ 'bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml' ]
+      [
+        'bundle',
+        'exec',
+        'sidekiq',
+        '-C',
+        'config/sidekiq.yml'
+      ]
 
   evolution:
     image: davidsongomes/evolution-api:latest
-    restart: always
     ports:
       - 8080:8080
     environment:
@@ -203,9 +217,19 @@ services:
       # seconds - 3600s ===1h | zero (0) - never expires
       - AUTHENTICATION_JWT_EXPIRIN_IN=0
       - AUTHENTICATION_JWT_SECRET='L=0YWt]b2w[WF>#>:&E`'
-    command: ['node', './dist/src/main.js']
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+    command: [ 'node', './dist/src/main.js' ]
     expose:
       - 8080
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    ports:
+      - 5678:5678
+    volumes:
+      - n8n_data:/home/node/.n8n
 
 volumes:
   chatwoot_data:
@@ -213,4 +237,10 @@ volumes:
   chatwoot_postgres_data:
     external: true
   chatwoot_redis_data:
+    external: true
+  evolution_instances:
+    external: true
+  evolution_store:
+    external: true
+  n8n_data:
     external: true

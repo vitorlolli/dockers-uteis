@@ -1,8 +1,15 @@
 # CHATWOOT
 
 ## Deploy
-- `docker compose run --rm rails bundle exec rails db:chatwoot_prepare`
-- `docker compose up -d`
+1. `docker compose run --rm rails bundle exec rails db:chatwoot_prepare`
+2. `docker compose up -d`
+
+## Liberar configurações de instalação no console do super admin
+1. Conectar no container de postgres `psql -U ${username}`
+2. `\c chatwoot_production`
+3. `update installation_configs set locked = false;`
+4. `\q`
+5. Reiniciar container `docker restart ${indentificardor do container}`
 
 ## Cadastrar Caixa de entrada para integração do evolution API
 ```
@@ -22,6 +29,3 @@ curl --request POST \
 	"chatwoot_conversation_pending": false
 }'
 ```
-
-## TODO
-- [ ] Criar os volumes para o evolution API
