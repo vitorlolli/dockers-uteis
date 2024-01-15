@@ -1,12 +1,12 @@
 services:
   rabbitmq:
-    image: rabbitmq:3.9.29-management
+    image: rabbitmq:3.12.12-management
     # container_name e hostname servem para sempre gerar as mesmas pastas para o volume 
     container_name: rabbitmq
     hostname: rabbit
     ports:
       - 5672:5672
-      - 15672:15672
+      - 8080:15672
     volumes:
       - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - rabbitmq_data:/var/lib/rabbitmq
