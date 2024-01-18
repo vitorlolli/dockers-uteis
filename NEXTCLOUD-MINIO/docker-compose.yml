@@ -1,0 +1,83 @@
+# subir o container do minio primeiro para gerar a chave e a senha
+
+services:
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio@123
+      - MINIO_BROWSER_REDIRECT_URL=http://host.docker.internal:9001
+      - MINIO_SERVER_URL=http://host.docker.internal:9000
+      
+  nextcloud_mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_ROOT_PASSWORD=nextcloud
+    volumes:
+      - nextcloud_mysql:/var/lib/mysql
+
+  nextcloud:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_HOST=nextcloud_mysql
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=nextcloud
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=admin
+      - OVERWRITEPROTOCOL=http
+      - OBJECTSTORE_S3_HOST=minio
+      - OBJECTSTORE_S3_PORT=9000
+      - OBJECTSTORE_S3_BUCKET=nextcloud
+      - OBJECTSTORE_S3_KEY=mtPAtnVjczWw6473FYkx
+      - OBJECTSTORE_S3_SECRET=OY34482Q8WkOOTNO9jz1uknqHfqOAz7UOwbbSYB9
+      - OBJECTSTORE_S3_SSL=false
+      - OBJECTSTORE_S3_USEPATH_STYLE=true
+      - OBJECTSTORE_S3_LEGACYAUTH=false
+      - OBJECTSTORE_S3_AUTOCREATE=true
+    depends_on:
+      - nextcloud_mysql
+      - minio
+    volumes:
+      - nextcloud:/var/www/html
+      - nextcloud_custom_app:/var/www/html/custom_apps
+      - nextcloud_config:/var/www/html/config
+      - nextcloud_data:/var/www/html/data
+      - nextcloud_themes:/var/www/html/themes
+  
+  nginx:
+    image: nginx
+    environment:
+      - FPM_HOST=nextcloud
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
+      - nextcloud:/var/www/html
+    ports:
+      - 80:80
+    depends_on:
+      - nextcloud
+
+volumes:
+  nextcloud_mysql:
+    external: true
+  nextcloud:
+    external: true
+  nextcloud_custom_app:
+    external: true
+  nextcloud_config:
+    external: true
+  nextcloud_data:
+    external: true
+  nextcloud_themes:
+    external: true
+  minio_data:
+    external: true
