@@ -1,0 +1,21 @@
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:2.11.0'
+    ports:
+      - '80:80'
+      - '81:81'
+    volumes:
+      - ngnix_proxy_manager_data:/data
+      - ngnix_proxy_manager_letsencrypt:/etc/letsencrypt
+    networks:
+      - ngnix_proxy_manager_network
+
+volumes:
+  ngnix_proxy_manager_data:
+    external: true
+  ngnix_proxy_manager_letsencrypt:
+    external: true
+
+networks:
+  ngnix_proxy_manager_network:
+    external: true
