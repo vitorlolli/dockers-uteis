@@ -20,8 +20,6 @@ services:
     environment:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_ROOT_PASSWORD=nextcloud
-    volumes:
-      - nextcloud_mysql:/var/lib/mysql
 
   nextcloud:
     build:
@@ -38,8 +36,8 @@ services:
       - OBJECTSTORE_S3_HOST=minio
       - OBJECTSTORE_S3_PORT=9000
       - OBJECTSTORE_S3_BUCKET=nextcloud
-      - OBJECTSTORE_S3_KEY=mtPAtnVjczWw6473FYkx
-      - OBJECTSTORE_S3_SECRET=OY34482Q8WkOOTNO9jz1uknqHfqOAz7UOwbbSYB9
+      - OBJECTSTORE_S3_KEY=minio
+      - OBJECTSTORE_S3_SECRET=minio@123
       - OBJECTSTORE_S3_SSL=false
       - OBJECTSTORE_S3_USEPATH_STYLE=true
       - OBJECTSTORE_S3_LEGACYAUTH=false
@@ -49,10 +47,6 @@ services:
       - minio
     volumes:
       - nextcloud:/var/www/html
-      - nextcloud_custom_app:/var/www/html/custom_apps
-      - nextcloud_config:/var/www/html/config
-      - nextcloud_data:/var/www/html/data
-      - nextcloud_themes:/var/www/html/themes
   
   nginx:
     image: nginx
@@ -67,17 +61,5 @@ services:
       - nextcloud
 
 volumes:
-  nextcloud_mysql:
-    external: true
   nextcloud:
-    external: true
-  nextcloud_custom_app:
-    external: true
-  nextcloud_config:
-    external: true
-  nextcloud_data:
-    external: true
-  nextcloud_themes:
-    external: true
   minio_data:
-    external: true
