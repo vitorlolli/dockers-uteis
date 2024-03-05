@@ -1,19 +1,20 @@
+version: '3'
+
 services:
   db:
     image: mysql:5.7
-    restart: always
     environment:
-      - MYSQL_DATABASE=exampledb
-      - MYSQL_USER=exampleuser
-      - MYSQL_PASSWORD=examplepass
-      - MYSQL_ROOT_PASSWORD=rootpassword
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - db:/var/lib/mysql
-  
+
   wordpress:
     depends_on:
       - db
-    image: wordpress:6.4.3-php8.1-fpm
+    image: wordpress:php8.3-fpm
     environment:
       - WORDPRESS_DB_HOST=db
       - WORDPRESS_DB_USER=exampleuser
@@ -21,16 +22,16 @@ services:
       - WORDPRESS_DB_NAME=exampledb
     volumes:
       - wordpress:/var/www/html
-  
+
   nginx:
     depends_on:
       - wordpress
-    image: nginx:1.25.4
+    image: nginx
     ports:
       - 80:80
     volumes:
       - wordpress:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
 
 volumes:
   wordpress:

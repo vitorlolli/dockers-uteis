@@ -1,13 +1,13 @@
 services:
-  redis:
+  redis-teste:
     image: redis
     environment:
       - REDIS_PASSWORD=redis
     volumes:
       - redis_data:/data
     command: redis-server
-    # ports:
-    #   - 6379:6379
+    ports:
+      - 6379:6379
 
 volumes:
   redis_data:

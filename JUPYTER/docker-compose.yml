@@ -1,6 +1,7 @@
-# falta configurar volumes e instalação do nodejs
 services:
   jupyter:
-    image: quay.io/jupyter/scipy-notebook:2024-01-15
+    build: 
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - 8888:8888

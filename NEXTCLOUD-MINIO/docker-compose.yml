@@ -33,15 +33,15 @@ services:
       - NEXTCLOUD_ADMIN_USER=admin
       - NEXTCLOUD_ADMIN_PASSWORD=admin
       - OVERWRITEPROTOCOL=http
-      - OBJECTSTORE_S3_HOST=minio
-      - OBJECTSTORE_S3_PORT=9000
-      - OBJECTSTORE_S3_BUCKET=nextcloud
-      - OBJECTSTORE_S3_KEY=minio
-      - OBJECTSTORE_S3_SECRET=minio@123
-      - OBJECTSTORE_S3_SSL=false
-      - OBJECTSTORE_S3_USEPATH_STYLE=true
-      - OBJECTSTORE_S3_LEGACYAUTH=false
-      - OBJECTSTORE_S3_AUTOCREATE=true
+      # - OBJECTSTORE_S3_HOST=minio
+      # - OBJECTSTORE_S3_PORT=9000
+      # - OBJECTSTORE_S3_BUCKET=nextcloud
+      # - OBJECTSTORE_S3_KEY=minio
+      # - OBJECTSTORE_S3_SECRET=minio@123
+      # - OBJECTSTORE_S3_SSL=false
+      # - OBJECTSTORE_S3_USEPATH_STYLE=true
+      # - OBJECTSTORE_S3_LEGACYAUTH=false
+      # - OBJECTSTORE_S3_AUTOCREATE=true
     depends_on:
       - nextcloud_mysql
       - minio

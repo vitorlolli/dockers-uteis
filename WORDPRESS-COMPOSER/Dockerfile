@@ -12,6 +12,8 @@ RUN chmod +x wp-cli.phar
 
 RUN mv wp-cli.phar /usr/local/bin/wp
 
+RUN chmod -R 775 wp-content
+
 # faz a pre instalação
 # RUN wp core install --url=localhost --title=teste --admin_user=teste --admin_password=teste --admin_email=teste@teste.com --locale=pt_BR --skip-email --allow-root
 
