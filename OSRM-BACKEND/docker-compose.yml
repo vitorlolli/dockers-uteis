@@ -1,0 +1,5 @@
+services:
+  osrm-backend:
+    image: osrm/osrm-backend
+    ports:
+      - 5000:5000
