@@ -2,7 +2,10 @@
 
 services:
   n8n:
-    image: docker.n8n.io/n8nio/n8n
+    # image: docker.n8n.io/n8nio/n8n
+    build: 
+      context: ./
+      dockerfile: Dockerfile
     volumes:
       - n8n_data:/home/node/.n8n
     environment:
