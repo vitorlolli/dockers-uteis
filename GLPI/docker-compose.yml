@@ -1,33 +1,38 @@
 services:
-  db:
+  glpi_db:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
       - 3306:3306 
     environment:
-      - MYSQL_ROOT_PASSWORD=teste
-      - MYSQL_USER=teste
-      - MYSQL_PASSWORD=teste
-      - MYSQL_DATABASE=teste
+      - MYSQL_ROOT_PASSWORD=glpi
+      - MYSQL_USER=glpi
+      - MYSQL_PASSWORD=glpi
+      - MYSQL_DATABASE=glpi
     volumes:
-      - mysql_data:/var/lib/mysql
+      - glpi_mysql_data:/var/lib/mysql
 
   glpi:
     image: elestio/glpi:latest
     ports:
       - 80:80
     volumes:
-      - glpi:/var/www/html/glpi
+      - glpi_data:/var/www/html/glpi
     environment:
       - TIMEZONE=America/Sao_Paulo
       - ADMIN_EMAIL=admin@email.com
       - ADMIN_PASSWORD=admin
-      - MYSQL_ROOT_PASSWORD=teste
-      - MYSQL_DATABASE=teste
-      - MYSQL_USER=teste
-      - MYSQL_PASSWORD=teste
+      - DOMAIN=localhost
+      - MYSQL_ROOT_PASSWORD=glpi
+      - MYSQL_DATABASE=glpi
+      - MYSQL_USER=glpi
+      - MYSQL_PASSWORD=glpi
+    depends_on:
+      - db
 
 volumes:
-  mysql_data:
-  glpi:
+  glpi_mysql_data:
+    external: true
+  glpi_data:
+    external: true
