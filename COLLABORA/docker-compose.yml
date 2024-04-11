@@ -1,0 +1,8 @@
+services:
+  collabora:
+    image: collabora/code:23.05.10.1.1
+    privileged: true
+    ports:
+      - 9980:9980
+    environment:
+      - extra_params=--o:ssl.enable=false
