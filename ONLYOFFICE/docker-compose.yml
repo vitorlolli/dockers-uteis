@@ -1,0 +1,14 @@
+services:
+  onlyoffice:
+    image: onlyoffice/documentserver:8.0.1
+    ports:
+      - 9980:80
+    volumes:
+      - onlyoffice-data:/var/log/onlyoffice
+    environment:
+      - JWT_ENABLED=true
+      - JWT_SECRET=kFz3w56e24lV76hJ0CJrmHedReNNibSa
+
+volumes:
+  onlyoffice-data:
+    external: true
