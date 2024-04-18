@@ -1,4 +1,4 @@
-FROM nextcloud:27-fpm
+FROM nextcloud:28.0.2-fpm
 
 # configuração para customização
 # copia as imagens para a configuração visual do Nextcloud
