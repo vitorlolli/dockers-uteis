@@ -1,8 +1,15 @@
-# implementação sem banco postgresql
-
 services:
+  n8n_mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: n8n
+      MYSQL_DATABASE: n8n
+    volumes:
+      - n8n_mysql_data:/var/lib/mysql
+
   n8n:
-    # image: docker.n8n.io/n8nio/n8n
     build: 
       context: ./
       dockerfile: Dockerfile
@@ -11,9 +18,19 @@ services:
     environment:
       - GENERIC_TIMEZONE=America/Sao_Paulo
       - TZ=America/Sao_Paulo
+      - DB_TYPE=mysqldb
+      - DB_MYSQLDB_HOST=n8n_mysql
+      - DB_MYSQLDB_PORT=3306
+      - DB_MYSQLDB_USER=root
+      - DB_MYSQLDB_PASSWORD=n8n
+      - DB_MYSQLDB_DATABASE=n8n
+      - N8N_ENCRYPTION_KEY=SVSolutionNora
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
     ports:
       - 5678:5678
 
 volumes:
   n8n_data:
+    external: true
+  n8n_mysql_data:
     external: true
