@@ -1,6 +1,6 @@
 FROM composer:2.0 as composer
 
-FROM wordpress:5.8
+FROM wordpress:php8.3
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
