@@ -6,8 +6,6 @@ services:
       - MYSQL_DATABASE=exampledb
     volumes:
       - db:/var/lib/mysql
-    ports:
-      - 3306:3306
 
   wordpress:
     depends_on:
@@ -15,6 +13,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    user: 33:33
     environment:
       - WORDPRESS_DB_HOST=db
       - WORDPRESS_DB_USER=root
