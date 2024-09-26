@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:13
+    networks:
+      - listmonk
+    environment:
+      - POSTGRES_PASSWORD=listmonk
+      - POSTGRES_USER=listmonk
+      - POSTGRES_DB=listmonk
+
+  #falta configurar pra rodar comando de instalação
+  app:
+    image: listmonk/listmonk:latest
+    ports:
+      - 9000:9000
+    networks:
+      - listmonk
+    environment:
+      - TZ=Asia/Manila
+    depends_on:
+      - db
+    volumes:
+      - ./config.toml:/listmonk/config.toml
+networks:
+  listmonk: null
+volumes:
+  listmonk-data: null
