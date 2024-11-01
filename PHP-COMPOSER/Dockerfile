@@ -1,17 +1,15 @@
 FROM composer:latest
 
-FROM php:7.2
+FROM php:8
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN apt-get update && \
-    apt-get install -y libxml2-dev git zip unzip libpng-dev libcurl4-openssl-dev pkg-config libssl-dev
+RUN apt-get update && apt-get install -y \
+    git \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
 
-RUN docker-php-ext-install soap
-RUN docker-php-ext-install gd
-
-# mongodb support
-RUN pecl install mongodb \
-    &&  echo "extension=mongodb.so" > $PHP_INI_DIR/conf.d/mongo.ini
-
-EXPOSE 8000
+WORKDIR /var/www/html/
