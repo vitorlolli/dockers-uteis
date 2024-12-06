@@ -13,7 +13,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    user: 33:33
+    # user: 33:33
     environment:
       - WORDPRESS_DB_HOST=db
       - WORDPRESS_DB_USER=root
