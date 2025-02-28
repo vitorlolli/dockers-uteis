@@ -1,0 +1,56 @@
+services:
+  api:
+    image: atendai/evolution-api:v1.8.2
+    depends_on:
+      - postgresql
+      - redis
+    ports:
+      - 8080:8080
+    environment:
+      - AUTHENTICATION_API_KEY=svsolution
+      - AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
+      - CONFIG_SESSION_PHONE_CLIENT=CBCTBMF
+      - CONFIG_SESSION_PHONE_NAME=Chrome
+      - SERVER_TYPE=http
+      - SERVER_PORT=8080
+      - SERVER_URL=http://host.docker.internal:8080
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://evolutionapi:evolutionapi@postgresql:5432/evolutionapi?schema=public
+      - DATABASE_SAVE_DATA_INSTANCE=false
+      - DATABASE_SAVE_DATA_NEW_MESSAGE=false
+      - DATABASE_SAVE_MESSAGE_UPDATE=false
+      - DATABASE_SAVE_DATA_CONTACTS=false
+      - DATABASE_SAVE_DATA_CHATS=false
+      - CACHE_REDIS_ENABLED=true
+      - CACHE_REDIS_URI=redis://:evolutionapi@redis:6379
+      - CACHE_REDIS_PREFIX_KEY=evolution
+      - CACHE_REDIS_SAVE_INSTANCES=false
+      - CACHE_LOCAL_ENABLED=false
+      - CONFIG_SESSION_PHONE_VERSION=2.2432.5.0
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+      
+  postgresql:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=evolutionapi
+      - POSTGRES_PASSWORD=evolutionapi
+      - POSTGRES_DB=evolutionapi
+    volumes:
+      - evolutionapi_postgresql_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4.1
+    environment:
+      - REDIS_PASSWORD=evolutionapi
+    volumes:
+      - evolutionapi_redis_data:/data
+    command: redis-server --requirepass evolutionapi
+
+volumes: 
+  evolution_instances:
+  evolution_store:
+  evolutionapi_postgresql_data:
+  evolutionapi_redis_data:
