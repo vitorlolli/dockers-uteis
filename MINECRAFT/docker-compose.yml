@@ -1,0 +1,19 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server
+    container_name: geyser-minecraft
+    ports:
+      - "25565:25565"     # Java Edition
+      - "19132:19132/udp" # Bedrock Edition
+    environment:
+      EULA: "TRUE"
+      VERSION: "1.21.5"
+      PAPER_CHANNEL: "experimental"
+      TYPE: "PAPER"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "minecraft"
+      ENABLE_QUERY: "true"
+      ONLINE_MODE: "false"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
