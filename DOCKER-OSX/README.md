@@ -13,3 +13,16 @@ docker run -it \
     -e SHORTNAME=sequoia \
     sickcodes/docker-osx:latest
 ```
+
+|DEVICE_MODEL |SERIAL      |BOARD_SERIAL     |
+|:-----------:|:----------:|:---------------:|
+|iMacPro1,1   |C02VXLY9HX87|C027533034NJG36JA|
+
+|UUID                                |
+|:----------------------------------:|
+|67970125-34FE-4AEE-994D-71F80F3288F0|
+
+|MAC_ADDRESS      |
+|:---------------:|
+|D0:3F:AA:6F:8D:97|
+
