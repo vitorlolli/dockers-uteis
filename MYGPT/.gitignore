@@ -1,0 +1,4 @@
+ollama/*
+!ollama/.gitkeep
+open-webui/*
+!open-webui/.gitkeep
