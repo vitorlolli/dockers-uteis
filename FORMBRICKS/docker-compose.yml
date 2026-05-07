@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: formbricks-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: formbricks
+      POSTGRES_PASSWORD: formbricks
+      POSTGRES_DB: formbricks
+    ports:
+      - "5432:5432"
+    volumes:
+      - formbricks_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: formbricks-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: formbricks-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  formbricks:
+    image: ghcr.io/formbricks/formbricks:latest
+    container_name: formbricks
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - mailpit
+    ports:
+      - "3000:3000"
+    environment:
+      # Banco
+      DATABASE_URL: postgresql://formbricks:formbricks@postgres:5432/formbricks
+
+      # Redis
+      REDIS_URL: redis://redis:6379
+
+      # URL
+      NEXTAUTH_URL: http://host.docker.internal:3000
+
+      # Secrets
+      NEXTAUTH_SECRET: aee88087d81ac68e3587f5fb47bab764f6d37701249871a3dc92569b1f93b39f
+      ENCRYPTION_KEY: 17a55ee5de345a32f21c562d82162d8219a7c40fbc1d42602f0ec3cb520734fc
+      CRON_SECRET: f11f2d5a7b3b238f1693384d55db29b7b41d24166f4df215994830a26ae16a1f
+
+      # SMTP
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_SECURE_ENABLED: "0"
+
+      SMTP_USER: test
+      SMTP_PASSWORD: test
+
+      MAIL_FROM: noreply@example.com
+      SMTP_FROM: noreply@example.com
+
+volumes:
+  formbricks_postgres_data:
+    external: true
